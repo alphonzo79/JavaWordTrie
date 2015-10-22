@@ -11,7 +11,11 @@ class TrieNode implements Serializable {
 
     boolean addWord(char[] word, int index) {
         if(++index == word.length) {
-            return isWordEnd = true;
+            if(!isWordEnd) {
+                return isWordEnd = true;
+            } else {
+                return false;
+            }
         } else {
             int nodeIndex = getIndexOfChar(word[index]);
             if(nodeIndex == -1) {

@@ -1,11 +1,12 @@
 package rowley.wordtrie;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by joe on 10/20/15.
  */
-public class WordTrie {
+public class WordTrie implements Serializable {
     private TrieNode[] childNodes = new TrieNode[26];
     private int wordCount = 0;
 
