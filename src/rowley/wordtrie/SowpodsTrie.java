@@ -1,4 +1,4 @@
-package rowley.sowpodstrie;
+package rowley.wordtrie;
 
 /**
  * Created by joe on 10/20/15.

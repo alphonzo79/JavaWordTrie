@@ -1,4 +1,4 @@
-package rowley.sowpodstrie;
+package rowley.wordtrie;
 
 import java.io.Serializable;
 

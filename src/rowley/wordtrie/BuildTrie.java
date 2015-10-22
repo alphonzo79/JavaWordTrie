@@ -1,7 +1,6 @@
-package rowley.sowpodstrie;
+package rowley.wordtrie;
 
 import java.io.*;
-import java.net.URL;
 
 /**
  * Created by joe on 10/20/15.
