@@ -7,7 +7,7 @@ import java.io.*;
  */
 public class BuildTrie {
     public static void main(String[] args) {
-        SowpodsTrie trie = new SowpodsTrie();
+        WordTrie trie = new WordTrie();
 
         File file = new File("./assets/sowpods.txt");
         try {
