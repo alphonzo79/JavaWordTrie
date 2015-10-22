@@ -3,6 +3,8 @@ package rowley.wordtrie;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.*;
+
 /**
  * Created by joe on 10/21/15.
  */
@@ -54,5 +56,59 @@ public class WordTrieTest {
         WordTrie trie = new WordTrie();
         trie.addWords(testWords);
         Assert.assertEquals(testWords.length, trie.getWordCount());
+    }
+
+    @Test
+    public void testFullSowpodList() {
+        long start = System.currentTimeMillis();
+        WordTrie trie = new WordTrie.WordTrieBuilder().addSowpodWords().build();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("sowpods.txt");
+        InputStreamReader streamReader = new InputStreamReader(is);
+        BufferedReader bufferedReader = new BufferedReader(streamReader);
+        String word;
+        try {
+            while((word = bufferedReader.readLine()) != null) {
+                Assert.assertTrue(trie.isKnownWord(word));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        FileOutputStream fos = null;
+//        ObjectOutputStream oos = null;
+//        File output = new File("./resources/sowpods.trie");
+//        try {
+//            fos = new FileOutputStream(output);
+//            oos = new ObjectOutputStream(fos);
+//
+//            oos.writeObject(trie);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if(fos != null) {
+//                try {
+//                    fos.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            if(oos != null) {
+//                try {
+//                    oos.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+
+        Assert.assertFalse(trie.isKnownWord("gobbkleksnkoieklsnkls"));
+        Assert.assertFalse(trie.isKnownWord("1234"));
+        long end = System.currentTimeMillis();
+
+        System.out.println(end - start);
     }
 }

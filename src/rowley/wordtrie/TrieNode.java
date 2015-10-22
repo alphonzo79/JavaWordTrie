@@ -5,9 +5,15 @@ import java.io.Serializable;
 /**
  * Created by joe on 10/20/15.
  */
-class TrieNode {
-    private TrieNode[] childNodes = new TrieNode[26];
+class TrieNode implements Serializable {
+    private TrieNode[] childNodes;
     private boolean isWordEnd = false;
+    private char character;
+
+    TrieNode(char character) {
+        this.character = character;
+        childNodes = new TrieNode[2];
+    }
 
     boolean addWord(char[] word, int index) {
         if(++index == word.length) {
@@ -17,83 +23,56 @@ class TrieNode {
                 return false;
             }
         } else {
-            int nodeIndex = getIndexOfChar(word[index]);
-            if(nodeIndex == -1) {
+            if(word[index] < 'a' || word[index] > 'z') {
                 return false;
             }
 
-            if(childNodes[nodeIndex] == null) {
-                childNodes[nodeIndex] = new TrieNode();
+            int nodeIndex = 0;
+            for(; nodeIndex < childNodes.length; nodeIndex++) {
+                if(childNodes[nodeIndex] == null) {
+                    break;
+                }
+                if(childNodes[nodeIndex].getCharacter() == word[index]) {
+                    return childNodes[nodeIndex].addWord(word, index);
+                }
             }
+
+            //If we're here we did not have an existing node to add to and we need to create
+            //one at the index we have been left with
+            if(nodeIndex == childNodes.length) {
+                resizeChildNodes();
+            }
+            childNodes[nodeIndex] = new TrieNode(word[index]);
             return childNodes[nodeIndex].addWord(word, index);
         }
+    }
+
+    private void resizeChildNodes() {
+        //Only increase by 2 because we know we will never work with anything larger than 26
+        //Also, building the trie is prep work, ideally done only once, and we want to limit
+        //our memory footprint because it can get out of control real quick. So we will only increase
+        //the size of the array by 2 each time
+        TrieNode[] temp = new TrieNode[childNodes.length + 2];
+        for(int i = 0; i < childNodes.length; i++) {
+            temp[i] = childNodes[i];
+        }
+        childNodes = temp;
     }
 
     boolean isKnownWord(char[] word, int index) {
         if(++index == word.length) {
             return isWordEnd;
         } else {
-            int nodeIndex = getIndexOfChar(word[index]);
-            return nodeIndex > -1 && childNodes[nodeIndex] != null && childNodes[nodeIndex].isKnownWord(word, index);
+            for(TrieNode node : childNodes) {
+                if(node != null && node.getCharacter() == word[index]) {
+                    return node.isKnownWord(word, index);
+                }
+            }
+            return false;
         }
     }
 
-    static int getIndexOfChar(char character) {
-        switch(character) {
-            case 'a':
-                return 0;
-            case 'b':
-                return 1;
-            case 'c':
-                return 2;
-            case 'd':
-                return 3;
-            case 'e':
-                return 4;
-            case 'f':
-                return 5;
-            case 'g':
-                return 6;
-            case 'h':
-                return 7;
-            case 'i':
-                return 8;
-            case 'j':
-                return 9;
-            case 'k':
-                return 10;
-            case 'l':
-                return 11;
-            case 'm':
-                return 12;
-            case 'n':
-                return 13;
-            case 'o':
-                return 14;
-            case 'p':
-                return 15;
-            case 'q':
-                return 16;
-            case 'r':
-                return 17;
-            case 's':
-                return 18;
-            case 't':
-                return 19;
-            case 'u':
-                return 20;
-            case 'v':
-                return 21;
-            case 'w':
-                return 22;
-            case 'x':
-                return 23;
-            case 'y':
-                return 24;
-            case 'z':
-                return 25;
-            default:
-                return -1;
-        }
+    public char getCharacter() {
+        return character;
     }
 }
