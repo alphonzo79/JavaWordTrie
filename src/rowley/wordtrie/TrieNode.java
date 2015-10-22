@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by joe on 10/20/15.
  */
-class TrieNode implements Serializable {
+class TrieNode {
     private TrieNode[] childNodes = new TrieNode[26];
     private boolean isWordEnd = false;
 

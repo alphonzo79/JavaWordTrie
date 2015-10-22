@@ -1,14 +1,19 @@
 package rowley.wordtrie;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.List;
 
 /**
  * Created by joe on 10/20/15.
  */
-public class WordTrie implements Serializable {
+public class WordTrie {
     private TrieNode[] childNodes = new TrieNode[26];
     private int wordCount = 0;
+
+    //Default constructor package private to enforce use of the builder
+    WordTrie() {
+
+    }
 
     public void addWord(String word) {
         if(word.length() < 1) {
@@ -83,5 +88,49 @@ public class WordTrie implements Serializable {
 
     public int getWordCount() {
         return wordCount;
+    }
+
+    private void initializeSowpodWords() {
+        readInResource("sowpods.txt");
+    }
+
+    private void initializeEnableWords() {
+        readInResource("enable1.txt");
+    }
+
+    private void readInResource(String filename) {
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
+        InputStreamReader streamReader = new InputStreamReader(is);
+        BufferedReader bufferedReader = new BufferedReader(streamReader);
+        String word;
+        try {
+            while((word = bufferedReader.readLine()) != null) {
+                addWord(word);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static class WordTrieBuilder {
+        private WordTrie trie;
+
+        public WordTrieBuilder() {
+            trie = new WordTrie();
+        }
+
+        public WordTrieBuilder addSowpodWords() {
+            trie.initializeSowpodWords();
+            return this;
+        }
+
+        public WordTrieBuilder addEnableWords() {
+            trie.initializeEnableWords();
+            return this;
+        }
+
+        public WordTrie build() {
+            return trie;
+        }
     }
 }
