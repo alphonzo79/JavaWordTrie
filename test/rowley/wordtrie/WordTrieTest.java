@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * Created by joe on 10/21/15.
@@ -110,5 +111,110 @@ public class WordTrieTest {
         long end = System.currentTimeMillis();
 
         System.out.println(end - start);
+    }
+
+    @Test
+    public void testPerformance() {
+        WordTrie trie = new WordTrie.WordTrieBuilder().addSowpodWords().build();
+        String[] wordArray = new String[267751];
+        List<String> wordList = new ArrayList<String>(267751);
+        Set<String> wordHashSet = new HashSet<String>(267751);
+        Set<String> wordTreeSet = new TreeSet<String>();
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream("sowpods.txt");
+        InputStreamReader streamReader = new InputStreamReader(is);
+        BufferedReader bufferedReader = new BufferedReader(streamReader);
+        String word;
+        try {
+            int i = 0;
+            while((word = bufferedReader.readLine()) != null) {
+                wordList.add(word);
+                wordArray[i] = word;
+                wordHashSet.add(word);
+                wordTreeSet.add(word);
+                i++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        long start = System.currentTimeMillis();
+        for(String target : wordArray) {
+            trie.isKnownWord(target);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("Trie find all: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        trie.isKnownWord(wordArray[0]);
+        end = System.currentTimeMillis();
+        System.out.println("Trie find first: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        trie.isKnownWord(wordArray[267750]);
+        end = System.currentTimeMillis();
+        System.out.println("Trie find last: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordList.contains(wordArray[0]);
+        end = System.currentTimeMillis();
+        System.out.println("List find first: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordList.contains(wordArray[267750]);
+        end = System.currentTimeMillis();
+        System.out.println("List find last: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        for(String target : wordArray) {
+            if(target.equals(wordList.get(0))) {
+                break;
+            }
+        }
+        end = System.currentTimeMillis();
+        System.out.println("Array find first: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        for(String target : wordArray) {
+            if(target.equals(wordList.get(267750))) {
+                break;
+            }
+        }
+        end = System.currentTimeMillis();
+        System.out.println("Array find last: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordHashSet.contains(wordArray[0]);
+        end = System.currentTimeMillis();
+        System.out.println("HashSet find first: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordHashSet.contains(wordArray[267750]);
+        end = System.currentTimeMillis();
+        System.out.println("HashSet find last: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        for(String target : wordArray) {
+            wordHashSet.contains(target);
+        }
+        end = System.currentTimeMillis();
+        System.out.println("HashSet find all: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordTreeSet.contains(wordArray[0]);
+        end = System.currentTimeMillis();
+        System.out.println("TreeSet find first: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        wordTreeSet.contains(wordArray[267750]);
+        end = System.currentTimeMillis();
+        System.out.println("TreeSet find last: " + (end - start) + " millis");
+
+        start = System.currentTimeMillis();
+        for(String target : wordArray) {
+            wordTreeSet.contains(target);
+        }
+        end = System.currentTimeMillis();
+        System.out.println("TreeSet find all: " + (end - start) + " millis");
     }
 }
