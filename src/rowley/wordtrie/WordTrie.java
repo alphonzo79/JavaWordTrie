@@ -90,22 +90,24 @@ public class WordTrie implements Serializable {
         return wordCount;
     }
 
-    private void initializeSowpodWords() {
-        readInResource("sowpods.txt");
+    private void initializeSowpodWords(int maxWordLength) {
+        readInResource("sowpods.txt", maxWordLength);
     }
 
-    private void initializeEnableWords() {
-        readInResource("enable1.txt");
+    private void initializeEnableWords(int maxWordLength) {
+        readInResource("enable1.txt", maxWordLength);
     }
 
-    private void readInResource(String filename) {
+    private void readInResource(String filename, int maxWordLength) {
         InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
         InputStreamReader streamReader = new InputStreamReader(is);
         BufferedReader bufferedReader = new BufferedReader(streamReader);
         String word;
         try {
             while((word = bufferedReader.readLine()) != null) {
-                addWord(word);
+                if(word.length() <= maxWordLength) {
+                    addWord(word);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,12 +205,22 @@ public class WordTrie implements Serializable {
         }
 
         public WordTrieBuilder addSowpodWords() {
-            trie.initializeSowpodWords();
+            trie.initializeSowpodWords(Integer.MAX_VALUE);
+            return this;
+        }
+
+        public WordTrieBuilder addSowpodWords(int maxWordLength) {
+            trie.initializeSowpodWords(maxWordLength);
             return this;
         }
 
         public WordTrieBuilder addEnableWords() {
-            trie.initializeEnableWords();
+            trie.initializeEnableWords(Integer.MAX_VALUE);
+            return this;
+        }
+
+        public WordTrieBuilder addEnableWords(int maxWordLength) {
+            trie.initializeEnableWords(maxWordLength);
             return this;
         }
 
